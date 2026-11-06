@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ t.site_title }}{% endblock %}
+
+{% block content %}
+    <div class="card" style="border-left: 5px solid #2c3e50;">
+        <h3>💬 {{ t.leave_comment|default:"Оставить комментарий" }}:</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="background: #2c3e50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                {{ t.submit_comment|default:"Опубликовать комментарий" }}
+            </button>
+        </form>
+    </div>
+
+    <h2>{{ t.posts_title|default:"Публикации" }}:</h2>
+
+    {% for post in posts %}
+        <div class="card">
+            <h3>{{ post.title }}</h3>
+            <div class="date">
+                {{ t.category|default:"Рубрика" }}: <b>{{ post.category.name }}</b> | {{ t.author|default:"Автор" }}: {{ post.author.username }} | {{ post.created_at|date:"d.m.Y H:i" }}
+            </div>
+            <p>{{ post.content }}</p>
+            <hr>
+
+            <div style="margin-top: 10px;">
+                <h4>{{ t.comments|default:"Комментарии" }}:</h4>
+                {% for comment in post.comments.all %}
+                    {% if comment.is_published %}
+                        <div class="comment">
+                            <b>{{ comment.subject }}</b>: {{ comment.text }}
+                            <div style="font-size: 11px; color: #888;">{{ comment.created_at|date:"d.m.Y H:i" }}</div>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <p style="color: #888; font-size: 13px;">{{ t.no_comments|default:"Комментариев пока нет." }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+        <p>{{ t.no_posts|default:"Статей пока нет." }}</p>
+    {% endfor %}
+{% endblock %}

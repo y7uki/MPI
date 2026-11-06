@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ t.site_title|default:"Мой Блог" }}{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px auto; max-width: 800px; background: #f4f6f9; color: #333; }
+        header { background: #2c3e50; color: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; }
+        header h1 { margin: 0 0 10px 0; }
+        header a { color: #fff; margin-right: 15px; text-decoration: none; font-weight: bold; }
+        header a:hover { text-decoration: underline; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .date { color: #888; font-size: 13px; margin: 5px 0 10px; }
+        .comment { background: #f9f9f9; border-left: 3px solid #2c3e50; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; }
+        .lang-btn { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ t.site_title|default:"Блог на Django" }}</h1>
+        <nav>
+            <a href="/">{{ t.home|default:"Главная" }}</a>
+            <a href="/admin/">{{ t.admin_panel|default:"Панель управления" }}</a>
+            {% if user.is_authenticated %}
+                <span style="color: #f1c40f; margin-left: 15px;">{{ t.welcome|default:"Привет" }}, {{ user.username }}!</span>
+                <a href="/accounts/logout/">{{ t.logout|default:"Выйти" }}</a>
+            {% else %}
+                <a href="/accounts/login/">{{ t.login|default:"Войти" }}</a>
+                <a href="/register/">{{ t.register|default:"Регистрация" }}</a>
+            {% endif %}
+
+            <span style="margin-left: 20px; border-left: 1px solid #777; padding-left: 15px;">
+                <a href="/lang/ru/" class="lang-btn">🇷🇺 RU</a>
+                <a href="/lang/en/" class="lang-btn">🇬🇧 EN</a>
+            </span>
+        </nav>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: #27ae60; color: white; padding: 12px 20px; border-radius: 6px; margin-bottom: 20px; font-weight: bold;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
